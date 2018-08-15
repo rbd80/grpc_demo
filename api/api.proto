@@ -1,0 +1,65 @@
+syntax = "proto3";
+package api;
+
+import "google/api/annotations.proto";
+
+message PingMessage {
+    string greeting = 1;
+}
+
+service Ping {
+    rpc SayHello(PingMessage) returns (PingMessage) {
+        option (google.api.http) = {
+          post: "/1/ping"
+          body: "*"
+        };
+    }
+}
+
+// The Person service definition
+
+service Person {
+    // Get all Persons with filter - A Server to client steaming to RPC
+    rpc GetPersons(PersonFilter) returns (stream PersonRequest){}
+    rpc CreatePerson(PersonRequest) returns (PersonResponse) {}
+}
+
+// Request message for creating a new person
+
+message PersonRequest {
+
+    int32 id = 1; //Unique ID number for a person
+
+    string name = 2;
+
+    string email = 3;
+
+    string phone = 4;
+
+    message Address {
+        string street = 1;
+
+        string city = 2;
+
+        string state = 3;
+
+        string zip = 4;
+
+        bool isShippingAddress = 5;
+
+    }
+
+    repeated Address addresses = 5;
+}
+
+message PersonResponse {
+
+    int32 id = 1;
+
+    bool success = 2;
+
+}
+
+message PersonFilter {
+    string keyword = 1;
+}
